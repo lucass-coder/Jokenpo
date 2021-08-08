@@ -1,4 +1,6 @@
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class Jogo extends StatefulWidget {
@@ -7,6 +9,69 @@ class Jogo extends StatefulWidget {
 }
 
 class _JogoState extends State<Jogo> {
+
+  var _imagemApp = AssetImage("images/padrao.png");
+  var _mensagem = "Escolha uma opção abaixo";
+
+  void _opcaoSelecionada(String escolhaUsuario){
+
+    var opcoes = ["pedra", "papel", "tesoura"];
+    var numero = Random().nextInt(3);
+    var escolhaApp = opcoes[numero];
+
+    print("Escolha do App " + escolhaApp);
+    print("Escolha do Usuario " + escolhaUsuario);
+
+    switch( escolhaApp ){
+      case "pedra" :
+        setState(() {
+          this._imagemApp = AssetImage("images/pedra.png");
+        });
+        break;
+
+      case "papel" :
+        setState(() {
+          this._imagemApp = AssetImage("images/papel.png");
+        });
+        break;
+
+      case "tesoura" :
+        setState(() {
+          this._imagemApp = AssetImage("images/tesoura.png");
+        });
+        break;
+    }
+
+    //Validação do ganhador
+    //Usuário Ganhador
+    if(
+      (escolhaUsuario == "pedra" && escolhaApp == "tesoura") ||
+      (escolhaUsuario == "papel" && escolhaApp == "pedra") ||
+      (escolhaUsuario == "tesoura" && escolhaApp == "papel")
+    ){
+      setState(() {
+        this._mensagem = "Parabéns!!! Você ganhou  :)";
+      });
+    }else if(   //App Ganhador
+          (escolhaApp == "pedra" && escolhaUsuario == "tesoura") ||
+          (escolhaApp == "papel" && escolhaUsuario == "pedra") ||
+          (escolhaApp == "tesoura" && escolhaUsuario == "papel")
+    ){
+      setState(() {
+        this._mensagem = "Você perdeu  :(";
+      });
+    }else{    //Empate
+      setState(() {
+        this._mensagem = "Empatamos!!!";
+      });
+    }
+
+
+    //print("Opção Selecionada: " + escolheUsuario); TAMBÉM SERVE ASSIM
+    //print("Opção Selecionada: $escolheUsuario");
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,16 +97,17 @@ class _JogoState extends State<Jogo> {
               ),
             ),
           ),
-          GestureDetector(
-            onTap: () { print("ImagemClicada");},
-            //onDoubleTap: () { print("DOIS CLIQUES NA IMAGEM");},
-            //onLongPress: () { print("clique longo");},
-            child: Image.asset("images/padrao.png"),
-          ),
+          Image(image: this._imagemApp,),
+          // GestureDetector(
+          //   onTap: () { print("ImagemClicada");},
+          //   //onDoubleTap: () { print("DOIS CLIQUES NA IMAGEM");},
+          //   //onLongPress: () { print("clique longo");},
+          //   child: Image.asset("images/padrao.png"),
+          // ),
           Padding(
             padding: EdgeInsets.only(top: 64, bottom: 32),
             child: Text(
-              "Escolhe uma opção abaixo",
+              this._mensagem,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20,
@@ -53,9 +119,22 @@ class _JogoState extends State<Jogo> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-            Image.asset("images/pedra.png", height: 100,),
-            Image.asset("images/papel.png", height: 100,),
-            Image.asset("images/tesoura.png", height: 100,),
+              GestureDetector(
+                onTap: () => _opcaoSelecionada("pedra") ,
+                child: Image.asset("images/pedra.png", height: 100,),
+              ),
+              GestureDetector(
+                onTap: () => _opcaoSelecionada("papel") ,
+                child: Image.asset("images/papel.png", height: 100,),
+              ),
+              GestureDetector(
+                onTap: () => _opcaoSelecionada("tesoura") ,
+                child: Image.asset("images/tesoura.png", height: 100,),
+              ),
+
+            // Image.asset("images/pedra.png", height: 100,),
+            // Image.asset("images/papel.png", height: 100,),
+            // Image.asset("images/tesoura.png", height: 100,),
             ]
           )
         ],
